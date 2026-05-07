@@ -56,6 +56,29 @@ For each sharer the script performs the following:
  - Revoke admin access
  - Log results and send email
 
+
+**Configuration**
+Before running the script, update the configuration section inside the script according to your environment.
+SharePoint Admin URL
+Update this value to match your tenant admin URL
+$AdminUrl = https://your-tenant-admin.sharepoint.com
+
+Email Recipients
+Update the recipients who should receive the script execution report
+$MailTo = admin@yourdomain.com, m365-team@yourdomain.com
+
+SMTP Settings
+Update the SMTP relay details based on your environment
+$SmtpServer = smtp.yourdomain.com
+$SmtpPort = 25
+$UseSsl = false
+
+Output Path
+Update the output path where logs and reports will be stored
+$BasePath = C:\Scripts\OneDrive
+Make sure this path exists on the server where the script is executed.
+
+
 **Usage**
 Example command
 .\OneDrive-Profile-UIL-Cleanup.ps1
