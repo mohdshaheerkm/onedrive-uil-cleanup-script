@@ -1,125 +1,94 @@
-🚀 OneDrive UIL Cleanup Script
-📌 Overview
-This repository contains a PowerShell script designed to resolve OneDrive / SharePoint access issues caused by UserInfoList (UIL) mismatch.
-This issue commonly occurs when a user is:
+**OneDrive UIL Cleanup Script**
+**Overview**
+This repository contains a PowerShell script to resolve OneDrive and SharePoint access issues caused by User Information List (UIL) mismatch.
+This issue occurs when a user is deleted and later recreated with the same User Principal Name (UPN). Even though permissions appear correct, the user may still receive "Access Denied" errors.
 
-Offboarded (account deleted), and
-Re-onboarded with the same UPN
-
-Even though the user appears to have access, they encounter Access Denied due to internal identity mismatch in SharePoint.
-
-⚠️ Problem Explanation
+**Problem**
 When a user is recreated:
+Azure AD assigns a new Object ID and SharePoint still retains the old identity in the User Information List (UIL)
+As a result: Files appear shared User cannot access them.
 
-Azure AD assigns a new Object ID
-SharePoint still retains the old ID in the UserInfoList (UIL)
+**Solution**
+This script removes stale UIL entries from specific OneDrive sites for the provided sharer users.
+The approach is:
+ - Identify OneDrive sites of the sharers
+ - Check if affected user exists in UIL
+ - Remove the stale entry if found
+ - Maintain logs and send email report
 
-Result:
+**Features**
+ - Scoped execution limited to selected sharers
+ - Safe for enterprise environments
+ - Automatic Site Collection Admin grant and revoke
+ - SMTP based email reporting without Outlook dependency
+ - Detailed logging with CSV and log files
+ - Dry run supported using the ReportOnly parameter
 
-Files appear shared ✅
-User cannot open them ❌
+**How It Works**
+For each sharer the script performs the following:
+ - Locate the OneDrive personal site
+ - Grant temporary admin access
+ - Check UserInfoList (UIL)
+ - Remove stale user entry if found
+ - Revoke admin access
+ - Log results and send email
 
-
-✅ Solution Approach
-This script:
-
-Identifies OneDrive sites of specific users (sharers)
-Removes the stale UIL entry for the affected user
-Keeps execution scoped and safe
-Maintains audit trail and reporting
-
-
-⚙️ Features
-✔ Scoped execution (specific sharers only)
-✔ Safe for enterprise use
-✔ Automatic Site Collection Admin (SCA) handling
-✔ SMTP email reporting (no Outlook dependency)
-✔ Detailed logging (CSV + logs)
-✔ Dry-run support using -ReportOnly
-
-🖥️ How It Works
-For each sharer:
-
-Locate OneDrive personal site
-Grant temporary admin access
-Check if affected user exists in UIL
-Remove stale entry if found
-Revoke admin access
-Log results and send email report
-
-
-▶️ Usage
-Example command:
+**Usage**
+Example command
 .\OneDrive-Profile-UIL-Cleanup.ps1
--AdminUPN "admin@tenant.onmicrosoft.com"
--AffectedUserUPN "user@domain.com"
--SharerUPNs "user1@domain.com","user2@domain.com"
+-AdminUPN admin@tenant.onmicrosoft.com
+-AffectedUserUPN user@domain.com
+-SharerUPNs user1@domain.com,user2@domain.com
 
-Dry run (recommended first):
+Dry run recommended before execution
 .\OneDrive-Profile-UIL-Cleanup.ps1
--AdminUPN "admin@tenant.onmicrosoft.com"
--AffectedUserUPN "user@domain.com"
--SharerUPNs "user1@domain.com","user2@domain.com"
+-AdminUPN admin@tenant.onmicrosoft.com
+-AffectedUserUPN user@domain.com
+-SharerUPNs user1@domain.com,user2@domain.com
 -ReportOnly
 
-📊 Output
-Each run creates a folder:
+**Output**
+Each run creates a folder in the following path:
 E:\Scripts\OneDrive\UIL_Cleanup_
-Containing:
+This folder contains:
+ - Actions.csv detailed audit log
+ - Run.log execution trace
+ - Email report sent via SMTP
 
-Actions.csv → detailed status report
-Run.log → execution trace
+**Email Reporting**
+The script sends a summary email including:
+ - Status per sharer
+ - Success and failure states
+ - Execution details
 
-Email report is sent via SMTP with full summary.
-
-📧 Email Reporting
-The script sends an email containing:
-
-Execution summary
-Status per sharer
-Success / failure indicators
-
-
-🔐 Security Considerations
-
-No tenant-wide operations
-Executes only on provided sharers
-Does not automatically reassign permissions
-
-
-⚠️ Important Note
-After cleanup:
-➡ Files must be re-shared manually
-This is by design due to Microsoft security controls.
-
-🧪 Status Codes
-
+**Status Codes**
+The script outputs the following statuses:
 ONEDRIVE_FOUND
 SCA_GRANTED
 UIL_FOUND
 UIL_REMOVED_SUCCESS
 UIL_NOT_PRESENT
 SCA_REVOKED
-ERROR_*
+ERROR
 
+**Important Notes**
+The script does not re share files automatically
+After cleanup content must be shared again manually
+Always run using ReportOnly before production execution
 
-🧩 Use Cases
-
-Re-onboarded user access issues
-OneDrive sharing problems
-SharePoint User ID mismatch scenarios
-
-
-📌 Requirements
-
+**Requirements**
 SharePoint Online Management Shell
 Admin permissions
 SMTP relay access
 
+**Use Cases**
+Re onboarded user access issues
+OneDrive sharing problems
+SharePoint User ID mismatch
 
-👤 Author
+**Author**
 Mohammed Shaheer Ashraf
-IT Consultant – Microsoft 365 / Azure / Hybrid Infrastructure
+IT Consultant Microsoft 365 Azure Hybrid Infrastructure
 
-⚠️ Disclaimer
-This script should be tested in a controlled environment before production use.
+**Disclaimer**
+Test the script in a controlled environment before using in production
