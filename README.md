@@ -1,4 +1,11 @@
 **OneDrive UIL Cleanup Script**
+
+![PowerShell](https://img.shields.io/badge/PowerShell-5.1+-blue?logo=powershell)
+![Microsoft 365](https://img.shields.io/badge/Microsoft%20365-M365-green)
+![License](https://img.shields.io/badge/License-MIT-yellow)
+
+
+
 **Overview**
 This repository contains a PowerShell script to resolve OneDrive and SharePoint access issues caused by User Information List (UIL) mismatch.
 This issue occurs when a user is deleted and later recreated with the same User Principal Name (UPN). Even though permissions appear correct, the user may still receive "Access Denied" errors.
@@ -15,6 +22,15 @@ The approach is:
  - Check if affected user exists in UIL
  - Remove the stale entry if found
  - Maintain logs and send email report
+
+**Before / After**
+
+Before:
+User has access but gets "Access Denied"
+
+After:
+User access restored after UIL cleanup and re-sharing
+
 
 **Features**
  - Scoped execution limited to selected sharers
@@ -92,3 +108,12 @@ IT Consultant Microsoft 365 Azure Hybrid Infrastructure
 
 **Disclaimer**
 Test the script in a controlled environment before using in production
+
+
+## Tags
+
+powerShell  
+microsoft365  
+sharepoint  
+onedrive  
+automation
