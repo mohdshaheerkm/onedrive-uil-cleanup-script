@@ -23,6 +23,13 @@ The approach is:
  - Remove the stale entry if found
  - Maintain logs and send email report
 
+**Architecture diagram**
+
+<img width="4032" height="336" alt="image" src="https://github.com/user-attachments/assets/da7315b7-b798-4429-8289-b0c4d4124cec" />
+
+    
+
+
 **Before / After**
 
 Before:
